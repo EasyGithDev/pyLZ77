@@ -82,7 +82,10 @@ def lz77_encode(s: str) -> list:
             # [(0, 0, 'A'), (1, 1, 'B'), (0, 0, 'C'), (4, 4, 'A'), (9, 2, 'D')]
             # [(0, 0, 'A'), (1, 1, 'B'), (0, 0, 'C'), (4, 4, 'A'), (5, 2, 'D')]
             # Les deux sont corrects, mais la meilleure pratique est de prendre la plus récente occurrence (distance minimale) pour optimiser la compression.
-            ind = find_str_reverse(window, suffix)
+            
+            # ind = find_str_reverse(window, suffix)
+            # utilisasation de la fonction interne
+            ind = window.rfind(suffix)
             if ind != -1:
 
                 if i + len(suffix) < s_len:
@@ -92,7 +95,10 @@ def lz77_encode(s: str) -> list:
 
                 triplet = (i - (start + ind), len(suffix), next_char)
                 jump = len(suffix) + 1
-
+            # on s'arrête dès que la fonction a retouné -1
+            # c'est un choix qui permet d'accélérer le traitement
+            else:
+                break
         # print(triplet)
         encoded.append(triplet)
         i += jump
