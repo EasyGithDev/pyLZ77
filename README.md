@@ -88,6 +88,12 @@ distance = i - j
 
 où `j` est l’indice du motif dans la fenêtre virtuelle.
 
+Dans les cas plus concrets, il est important de noter la valeur du décallage.
+
+```math
+distance = i - (start + j)
+```
+
 ---
 
 ### Les variables utilisées
@@ -123,9 +129,12 @@ L’indice `I` prend successivement les valeurs de 0 à 8, ce qui formalise notr
 ### Étape 1
 
 `I = 0`
+
+```
 Caractère courant : A
 Fenêtre virtuelle (FV) : ""
 Suffixe à venir (SC) : A B A B C A B C D
+```
 
 À cette étape, on recherche dans la fenêtre virtuelle FV ("") le motif le plus long du suffixe à venir SC (A B A B C A B C D).
 
@@ -138,9 +147,12 @@ Triplet : (0, 0, A)
 ### Étape 2
 
 `I = 1`
+
+```
 Caractère courant : B
 Fenêtre virtuelle : A
 Suffixe : B A B C A B C D
+```
 
 À cette étape, on recherche dans la fenêtre virtuelle FV (A) le motif le plus long du suffixe à venir SC (B A B C A B C D).
 
@@ -153,62 +165,74 @@ Triplet : (0, 0, B)
 ### Étape 3
 
 `I = 2`
+
+```
 Caractère courant : A
 Fenêtre : A B
 Suffixe : A B C A B C D
+```
 
 À cette étape, on recherche dans la fenêtre virtuelle FV (A B) le motif le plus long du suffixe à venir SC (A B C A B C D).
 
 Le motif "A B" est trouvé dans la fenêtre (à partir de l’indice J = 0).
 
+```
 Longueur = 2
 Distance = 2 - (0 + 0) = 2
 Caractère suivant le motif = C
+```
 
 Triplet : (2, 2, C)
+
+Attention, le motif trouvé est de longueur `L = 2`.
+
+On effectue un saut de 2 caractères en avant.
+
+```math
+i = i + l
+```
+
+`I = 2 + 3 = 5`
 
 ---
 
 ### Étape 4
 
-Puisque le motif trouvé est de longueur 2, on effectue un saut de 2 + 1 = 3.
-I = 2 + 3 = 5
-
 `I = 5`
+```
 Caractère courant : A
 Fenêtre virtuelle (FV) : A B A B C
 Suffixe à venir (SC) : A B C D
+```
 
 À cette étape, on recherche dans la fenêtre virtuelle FV (A B A B C) le motif le plus long du suffixe à venir SC (A B C D).
 
-Le motif "A B C" est trouvé dans la fenêtre, à partir de l’indice 0.
+On remarque que le motif `A B C` est déjà dans la fenêtre (à partir de l’indice 2 dans la fenêtre).
 
+```
 Longueur = 3
-Distance = 5 - (0 + 0) = 5
+Distance = 5 - (0 + 2) = 3
 Caractère suivant = D
+```
 
-Triplet : (5, 3, D)
+La distance se calcule comme :
 
----
+```math
+distance = i - (start + j)
+```
 
-## Tableau synthétique de l'exemple
+où :
 
-| Étape | I | Fenêtre virtuelle (FV) | Suffixe à venir (SC) | Motif trouvé | Distance | Longueur | Caractère suivant | Triplet   |
-| ----- | - | ---------------------- | -------------------- | ------------ | -------- | -------- | ----------------- | --------- |
-| 1     | 0 | ""                     | A B A B C A B C D    | –            | 0        | 0        | A                 | (0, 0, A) |
-| 2     | 1 | A                      | B A B C A B C D      | –            | 0        | 0        | B                 | (0, 0, B) |
-| 3     | 2 | A B                    | A B C A B C D        | A B          | 2        | 2        | C                 | (2, 2, C) |
-| 4     | 5 | A B A B C              | A B C D              | A B C        | 5        | 3        | D                 | (5, 3, D) |
+* `i` est la position actuelle,
+* `start` est le début réel de la fenêtre (dans le texte),
+* `j` est la position du motif trouvé dans la fenêtre.
 
----
-
-## La notion de distance dans LZ77
+Dans notre cas :
+`distance = 5 - (0 + 2) = 3`
 
 Lors de la compression avec LZ77, l’un des éléments les plus difficiles à comprendre est la **distance**, c’est-à-dire le premier élément du triplet : `(distance, longueur, caractère)`.
 
-En effet, tant que l'on n'a pas vu comment se déroule la **décompression**, cette notion peut sembler abstraite. Voici donc quelques explications pour mieux la saisir.
-
-### 1. Ce que signifie la distance
+En effet, tant que l'on n'a pas vu comment se déroule la **décompression**, cette notion peut sembler abstraite. 
 
 Lorsque l’on se trouve à la position `I` dans le texte :
 
@@ -219,38 +243,19 @@ Lorsque l’on se trouve à la position `I` dans le texte :
 On utilise cette distance **pendant la décompression** pour dire :
 **« Va X caractères en arrière dans ce que tu as déjà reconstruit, et copie Y caractères »**.
 
-Son effet **ne devient évident qu’au moment de la relecture ou de la reconstruction du texte**.
-
-### 2. Un exemple visuel
-
-Prenons cette chaîne :
-
-```
-Texte :     A B A B C A B C D
-Indices :   0 1 2 3 4 5 6 7 8
-```
-
-À l’indice `I = 5`, on a :
-
-* Suffixe à venir : `A B C D`
-* Fenêtre virtuelle : `A B A B C`
-
-On remarque que le motif `A B C` est déjà dans la fenêtre (à partir de l’indice 0 dans la fenêtre).
-
-La distance se calcule comme :
-
-```
-distance = I - (start + j)
-```
-
-où :
-
-* `I` est la position actuelle,
-* `start` est le début réel de la fenêtre (dans le texte),
-* `j` est la position du motif trouvé dans la fenêtre.
-
-Dans notre cas :
-`distance = 5 - (0 + 0) = 5`
-
 Cela signifie :
-**« Pour reconstituer ce passage plus tard, il suffira de reculer de 5 caractères dans ce qui a déjà été écrit, et de recopier 3 caractères. »**
+**« Pour reconstituer ce passage plus tard, il suffira de reculer de 3 caractères dans ce qui a déjà été écrit, et de recopier 3 caractères. »**
+
+Triplet : (3, 3, D)
+
+---
+
+## Tableau synthétique de l'exemple
+
+| Étape | I | Fenêtre virtuelle (FV) | Suffixe à venir (SC) | Motif trouvé | Distance | Longueur | Caractère suivant | Triplet   |
+| ----- | - | ---------------------- | -------------------- | ------------ | -------- | -------- | ----------------- | --------- |
+| 1     | 0 | ""                     | A B A B C A B C D    | –            | 0        | 0        | A                 | (0, 0, A) |
+| 2     | 1 | A                      | B A B C A B C D      | –            | 0        | 0        | B                 | (0, 0, B) |
+| 3     | 2 | A B                    | A B C A B C D        | A B          | 2        | 2        | C                 | (2, 2, C) |
+| 4     | 5 | A B A B C              | A B C D              | A B C        | 3        | 3        | D                 | (3, 3, D) |
+
