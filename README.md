@@ -103,7 +103,7 @@ distance = i - (start + j)
 | S   | Chaîne de caractères à compresser                                                 |
 | I   | Indice courant dans la chaîne                                                     |
 | FV  | Fenêtre virtuelle (les caractères déjà parcourus)                                 |
-| SC  | Suffixe à venir, c’est-à-dire la partie de la chaîne encore non traitée           |
+| SV  | Suffixe à venir, c’est-à-dire la partie de la chaîne encore non traitée           |
 | J   | Indice dans la fenêtre où le motif a été trouvé                                   |
 | D   | Distance entre la position actuelle et la position du motif dans la fenêtre       |
 | L   | Longueur du motif trouvé                                                          |
@@ -133,10 +133,10 @@ L’indice `I` prend successivement les valeurs de 0 à 8, ce qui formalise notr
 ```
 Caractère courant : A
 Fenêtre virtuelle (FV) : ""
-Suffixe à venir (SC) : A B A B C A B C D
+Suffixe à venir (SV) : A B A B C A B C D
 ```
 
-À cette étape, on recherche dans la fenêtre virtuelle FV ("") le motif le plus long du suffixe à venir SC (A B A B C A B C D).
+À cette étape, on recherche dans la fenêtre virtuelle FV ("") le motif le plus long du suffixe à venir SV (A B A B C A B C D).
 
 Aucun motif n’est trouvé car la fenêtre est vide.
 
@@ -154,7 +154,7 @@ Fenêtre virtuelle : A
 Suffixe : B A B C A B C D
 ```
 
-À cette étape, on recherche dans la fenêtre virtuelle FV (A) le motif le plus long du suffixe à venir SC (B A B C A B C D).
+À cette étape, on recherche dans la fenêtre virtuelle FV (A) le motif le plus long du suffixe à venir SV (B A B C A B C D).
 
 Aucun motif "B", "BA", etc. n’est trouvé dans A.
 
@@ -172,7 +172,7 @@ Fenêtre : A B
 Suffixe : A B C A B C D
 ```
 
-À cette étape, on recherche dans la fenêtre virtuelle FV (A B) le motif le plus long du suffixe à venir SC (A B C A B C D).
+À cette étape, on recherche dans la fenêtre virtuelle FV (A B) le motif le plus long du suffixe à venir SV (A B C A B C D).
 
 Le motif "A B" est trouvé dans la fenêtre (à partir de l’indice J = 0).
 
@@ -184,7 +184,7 @@ Caractère suivant le motif = C
 
 Triplet : (2, 2, C)
 
-Attention, le motif trouvé est de longueur `L = 2`.
+**Attention, le motif trouvé est de longueur `L = 2`.**
 
 On effectue un saut de 2 caractères en avant.
 
@@ -202,10 +202,10 @@ i = i + l
 ```
 Caractère courant : A
 Fenêtre virtuelle (FV) : A B A B C
-Suffixe à venir (SC) : A B C D
+Suffixe à venir (SV) : A B C D
 ```
 
-À cette étape, on recherche dans la fenêtre virtuelle FV (A B A B C) le motif le plus long du suffixe à venir SC (A B C D).
+À cette étape, on recherche dans la fenêtre virtuelle FV (A B A B C) le motif le plus long du suffixe à venir SV (A B C D).
 
 On remarque que le motif `A B C` est déjà dans la fenêtre (à partir de l’indice 2 dans la fenêtre).
 
@@ -252,7 +252,7 @@ Triplet : (3, 3, D)
 
 ## Tableau synthétique de l'exemple
 
-| Étape | I | Fenêtre virtuelle (FV) | Suffixe à venir (SC) | Motif trouvé | Distance | Longueur | Caractère suivant | Triplet   |
+| Étape | I | Fenêtre virtuelle (FV) | Suffixe à venir (SV) | Motif trouvé | Distance | Longueur | Caractère suivant | Triplet   |
 | ----- | - | ---------------------- | -------------------- | ------------ | -------- | -------- | ----------------- | --------- |
 | 1     | 0 | ""                     | A B A B C A B C D    | –            | 0        | 0        | A                 | (0, 0, A) |
 | 2     | 1 | A                      | B A B C A B C D      | –            | 0        | 0        | B                 | (0, 0, B) |
