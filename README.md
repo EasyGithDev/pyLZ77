@@ -189,10 +189,10 @@ Triplet : (2, 2, C)
 On effectue un saut de 2 caractères en avant.
 
 ```math
-i = i + l
+i = i + l + 1
 ```
 
-`I = 2 + 3 = 5`
+`I = 2 + 2 + 1 = 5`
 
 ---
 
