@@ -322,7 +322,7 @@ chaine_en_construction = "AB"
 + On ajoute les 2 caractères `AB` à la chaine en construction.
 + On ajoute le caractère `C` à la chaine en construction.
 
-Pour calculer le début et la fin de la chaine à copier, on a appliqué le raisonnement suivant :
+Pour calculer les indices de début et de fin, on a applique le raisonnement suivant :
 
 ```
 debut = 2 - 2 = 0
@@ -336,7 +336,7 @@ fin = 0 + 2 - 1 = 1
 
 Au final, on a ajouté les caratères `ABC`.
 
-### Ésssstape 4
+### Étape 4
 
 ```
 i = 5
@@ -349,7 +349,7 @@ chaine_en_construction = "ABABC"
 + On ajoute les 3 `ABC` caractères à la chaine en construction.
 + On ajoute le caractère `D`s à la chaine en construction.
 
-Pour calculer le début et la fin de la chaine à copier, on a appliqué le raisonnement suivant :
+Pour calculer les indices de début et de fin, on a applique le raisonnement suivant :
 
 ```
 debut = 5 - 3 = 2
