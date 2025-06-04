@@ -18,7 +18,7 @@ Cette recherche permet de construire un triplet :
 
 Le résultat de la compression est donc une suite de triplets.
 
----
+
 
 ### Formules importantes
 
@@ -34,7 +34,7 @@ Le résultat de la compression est donc une suite de triplets.
   `D = I - (start + J)`
   où `start` est l’indice réel du début de la fenêtre virtuelle.
 
----
+
 
 ## La fenêtre virtuelle 
 
@@ -94,7 +94,7 @@ Dans les cas plus concrets, il est important de noter la valeur du décallage.
 distance = i - (start + j)
 ```
 
----
+
 
 ### Les variables utilisées
 
@@ -110,7 +110,7 @@ distance = i - (start + j)
 | C   | Caractère suivant le motif                                                        |
 
 
-## Exemple
+## Exemple de compression
 
 Chaîne initiale :
 
@@ -142,7 +142,6 @@ Aucun motif n’est trouvé car la fenêtre est vide.
 
 Triplet : (0, 0, A)
 
----
 
 ### Étape 2
 
@@ -159,8 +158,6 @@ Suffixe : B A B C A B C D
 Aucun motif "B", "BA", etc. n’est trouvé dans A.
 
 Triplet : (0, 0, B)
-
----
 
 ### Étape 3
 
@@ -194,7 +191,7 @@ i = i + l + 1
 
 `I = 2 + 2 + 1 = 5`
 
----
+
 
 ### Étape 4
 
@@ -248,9 +245,7 @@ Cela signifie :
 
 Triplet : (3, 3, D)
 
----
-
-## Tableau synthétique de l'exemple
+## Synthèse de l'exemple
 
 | Étape | I | Fenêtre virtuelle (FV) | Suffixe à venir (SV) | Motif trouvé | Distance | Longueur | Caractère suivant | Triplet   |
 | ----- | - | ---------------------- | -------------------- | ------------ | -------- | -------- | ----------------- | --------- |
@@ -259,3 +254,117 @@ Triplet : (3, 3, D)
 | 3     | 2 | A B                    | A B C A B C D        | A B          | 2        | 2        | C                 | (2, 2, C) |
 | 4     | 5 | A B A B C              | A B C D              | A B C        | 3        | 3        | D                 | (3, 3, D) |
 
+
+## Exemple de décompression
+
+La phase de décompression est plus simple à comprendre. Elle se décompose de la manière suivante :
+
+On note : 
+
++ `i` : l'indice du prochain caractère à écrire.
++ `tc` : la taille de la chaine en construction.
++ `l` : le nombre de caractères à copier.
+  
+Pour chaque triplets faire :
+
++ récupérer les valeurs de distance, longeur et prochain caractère;
++ positionner vous en arrière dans la chaine grace à la distance;
++ copier une chaine de la longeur indiquée;
++ ajouter cette chaine à la fin de la chaine en construction;
++ ajouter le prochain caractère;
++ incrémenter `i` du nombre de caractères que l'on a écrit.
+
+Dans le cas ou la longueur et la distance ne sont pas nulles, on va calculer les indices de début et de fin de la chaine à copier :
+
+```math
+debut = tc - i
+```
+```math
+fin = debut + l - 1
+```
+
+
+### Étape 1
+
+```
+i = 0
+chaine_en_construction = ""
+(0, 0, A)
+```
+
++ Pas de retour en arrière car la distance est nulle.
++ Pas de copie car la longeur est nulle.
++ On ajoute le caractère `A` à la chaine en construction.
+
+### Étape 2
+
+```
+i = 1
+chaine_en_construction = "A"
+(0, 0, B)
+````
+
++ Pas de retour en arrière car la distance est nulle.
++ Pas de copie car la longeur est nulle.
++ On ajoute le caractère `B` à la chaine en construction.
+
+
+### Étape 3
+
+```
+i = 2
+chaine_en_construction = "AB"
+(2, 2, C)
+```
+
++ On retourne de 2 caractères en arrière.
++ On copie une chaine de 2 caractères.
++ On ajoute les 2 caractères `AB` à la chaine en construction.
++ On ajoute le caractère `C` à la chaine en construction.
+
+Pour calculer le début et la fin de la chaine à copier, on a appliqué le raisonnement suivant :
+
+```
+debut = 2 - 2 = 0
+fin = 0 + 2 - 1 = 1
+```
+
+| A | B |
+|---|---|
+| <span style="color:red">**0**</span> | <span style="color:red">**1**</span> |
+
+
+Au final, on a ajouté les caratères `ABC`.
+
+### Ésssstape 4
+
+```
+i = 5
+chaine_en_construction = "ABABC"
+(3, 3, D)
+```
+
++ On retourne de 3 caractères en arrière.
++ On copie une chaine de 3 caractères.
++ On ajoute les 3 `ABC` caractères à la chaine en construction.
++ On ajoute le caractère `D`s à la chaine en construction.
+
+Pour calculer le début et la fin de la chaine à copier, on a appliqué le raisonnement suivant :
+
+```
+debut = 5 - 3 = 2
+fin = 2 + 3 - 1 = 4
+```
+
+| A | B | A | B | C |
+|---|---|---|---|---|
+| 0 | 1 | <span style="color:red">**2**</span> | 3 | <span style="color:red">**4**</span> |
+
+
+Au final, on a ajouté les caratères `ABCD`.
+
+### Étape 5
+
+chaine_en_construction = "ABABCABCD"
+
+L'algorithme s'arrête car il n'y a plus de triplets.
